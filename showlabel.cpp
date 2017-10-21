@@ -3,9 +3,11 @@
 #include<QMouseEvent>
 #include<QMessageBox>
 #include<exception>
+#include"xmltool.h"
 ShowLabel::ShowLabel(QWidget *parent) : QLabel(parent)
 {
     setMouseTracking(true);
+    this->setToolTipDuration(1000);
     //图形选项：0：矩形 1：多边形
     //kind=0;
 }
@@ -69,9 +71,14 @@ qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
     if(!scaleimage.isNull())
     {
         painter->drawImage(0,0,scaleimage);
-    }
+    }else{}
+
+
+
+
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     painter->begin(&scaleimage);
     painter->setPen(QPen(Qt::red,2));
 
@@ -188,6 +195,7 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
 void ShowLabel::mouseMoveEvent(QMouseEvent *e)
 {
     cur=e->pos();
+    this->setToolTip(toString(cur));
     update();
 }
 
