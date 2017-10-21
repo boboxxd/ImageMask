@@ -25,6 +25,7 @@ class Controller:public QObject
           QThread workerThread;
       public:
           Controller() {
+              workerThread.setObjectName("sub_getimage");
               GetImage *worker = new GetImage;
               worker->moveToThread(&workerThread);
               connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
@@ -38,10 +39,10 @@ class Controller:public QObject
           }
 
       public slots:
-          void handleResults(const QImage );
+          void handleResults(const QImage & );
       signals:
           void operate(const QString &);
-          void image(QImage image);
+          void image(const QImage &image);
 
 };
 

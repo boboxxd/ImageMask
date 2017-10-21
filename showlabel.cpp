@@ -2,12 +2,10 @@
 #include<QDebug>
 #include<QMouseEvent>
 #include<QMessageBox>
-
+#include<exception>
 ShowLabel::ShowLabel(QWidget *parent) : QLabel(parent)
 {
     setMouseTracking(true);
-    image=new QImage;
-    scaleimage=new QImage;
     //图形选项：0：矩形 1：多边形
     //kind=0;
 }
@@ -18,36 +16,46 @@ void ShowLabel::setKind(int i)
 
 void ShowLabel::loadimage(QString imagename)
 {
-
+    qDebug()<<"void ShowLabel::loadimage(QString imagename)";
     QImage _image(imagename);    
     loadimage(_image);
 }
 
-void ShowLabel::loadimage(QImage _image)
+void ShowLabel::loadimage(const QImage &_image)
 {
-    qDebug()<<"loadimage";
+    qDebug()<<"void ShowLabel::loadimage(QImage _image)";
     if(!_image.isNull())
     {
-    *image=_image;
-    imagewidth=image->width();
-    imageheight=image->height();
-    if(this->width()<imagewidth||this->height()<image->height())
+     qDebug()<<_image.size();
+    image=_image;
+    imagewidth=image.width();
+    imageheight=image.height();
+    if(this->width()<imagewidth||this->height()<imageheight)
     {
-        *scaleimage=image->scaled(this->width(),this->height(),Qt::KeepAspectRatio);
-        widthrate=scaleimage->width()*1.0/imagewidth;
-        heightrate=scaleimage->height()*1.0/imageheight;
+        qDebug()<<"if(this->width()<imagewidth||this->height()<image->height())";
+        //scaleimage=QImage("/Users/xuxudong/Temp/2017101256171001.jpg").scaled(this->width(),this->height(),Qt::KeepAspectRatio);
+        scaleimage=image.scaled(this->width(),this->height(),Qt::KeepAspectRatio);
+qDebug()<<scaleimage.depth();
+
+        widthrate=scaleimage.width()*1.0/imagewidth;
+        heightrate=scaleimage.height()*1.0/imageheight;
+    }else
+    {
+        scaleimage=image;
     }
+        qDebug()<<"endif";
     }
     update();
 }
 
 void ShowLabel::resizeEvent(QResizeEvent *e)
 {
-    if(this->width()<imagewidth||this->height()<image->height())
+    qDebug()<<"void ShowLabel::resizeEvent(QResizeEvent *e)";
+    if(this->width()<imagewidth||this->height()<image.height())
     {
-        *scaleimage=image->scaled(this->width(),this->height(),Qt::KeepAspectRatio);
-        widthrate=scaleimage->width()*1.0/imagewidth;
-        heightrate=scaleimage->height()*1.0/imageheight;
+        scaleimage=image.scaled(this->width(),this->height(),Qt::KeepAspectRatio);
+        widthrate=scaleimage.width()*1.0/imagewidth;
+        heightrate=scaleimage.height()*1.0/imageheight;
         qDebug()<<imagewidth<<":"<<imageheight;
     }
     update();
@@ -55,15 +63,16 @@ void ShowLabel::resizeEvent(QResizeEvent *e)
 
 void ShowLabel::paintEvent(QPaintEvent *e)
 {
+qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
     painter=new QPainter(this);
     painter->setRenderHint(QPainter::Antialiasing,true);
-    if(!scaleimage->isNull())
+    if(!scaleimage.isNull())
     {
-        painter->drawImage(0,0,*scaleimage);
+        painter->drawImage(0,0,scaleimage);
     }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    painter->begin(scaleimage);
+    painter->begin(&scaleimage);
     painter->setPen(QPen(Qt::red,2));
 
 //绘制已经完成的图形

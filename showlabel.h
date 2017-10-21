@@ -44,17 +44,17 @@ signals:
 public slots:
     void setKind(int i=1000);
     void loadimage(QString imagename);
-    void loadimage(QImage _image);
+    void loadimage(const QImage& _image);
 private:
     QPainter *painter;
-    QImage *image;
+    QImage image;
 
     int imagewidth;
     int imageheight;
     qreal widthrate;
     qreal heightrate;
 
-    QImage *scaleimage;
+    QImage scaleimage;
     QPoint cur;
     Polygon polyon;
 

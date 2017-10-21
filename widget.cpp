@@ -24,8 +24,8 @@ void Widget::onconnectbtn()
     ui->label->clear();
     //开启捕获图片的线程
     Controller *con=new Controller;
-    connect(con,SIGNAL(image(QImage)),ui->label,SLOT(loadimage(QImage)));
-    con->operate(ui->lineEdit->text());
+    connect(con,SIGNAL(image(const QImage&)),ui->label,SLOT(loadimage(const QImage&)));
+    con->operate(ui->lineEdit->text().trimmed());
 }
 
  void Widget::onclearbtn()
@@ -37,9 +37,11 @@ void Widget::initwindow()
 {
     this->setWindowTitle("ImageMark");
     this->setFixedSize(870,600);
-    ui->label->loadimage(":/background.png");
+    //ui->label->loadimage(":/background.png");
     ui->lineEdit->setPlaceholderText("输入摄像机地址");
-   // rtsp://admin:ad53937301@49.91.240.16:554/h264/ch1/main/av_stream
+
+    // rtsp://admin:ad53937301@49.91.240.8:554/h264/ch1/main/av_stream
+    //   /Users/xuxudong/Temp/test.avi
 }
 
 Widget::~Widget()
@@ -71,5 +73,4 @@ void Widget::save()
         qDebug()<<ui->label->getpoints();
         qDebug()<<ui->label->getpoints().size()<<toString(ui->label->getpoints()[0]);
     }
-
 }
