@@ -39,6 +39,7 @@ void Widget::initwindow()
     this->setFixedSize(870,600);
     ui->label->loadimage(":/background.png");
     ui->lineEdit->setPlaceholderText("输入摄像机地址");
+   // rtsp://admin:ad53937301@49.91.240.16:554/h264/ch1/main/av_stream
 }
 
 Widget::~Widget()
@@ -49,6 +50,7 @@ Widget::~Widget()
 void Widget::drawRect()
 {
     qDebug()<<"void Widget::drawRect()";
+    ui->label->clear();//目的是在界面上只能出现一个区域
     ui->label->setKind(0);
     ui->label->update();
 }
@@ -56,6 +58,7 @@ void Widget::drawRect()
 void Widget::drawPolygon()
 {
     qDebug()<<"void Widget::drawPolygon()";
+    ui->label->clear();//目的是在界面上只能出现一个区域
     ui->label->setKind(1);
     ui->label->update();
 }
