@@ -17,7 +17,33 @@ Widget::Widget(QWidget *parent) :
     connect(ui->savebtn,SIGNAL(clicked(bool)),this,SLOT(save()));
     connect(ui->connectbtn,SIGNAL(clicked(bool)),this,SLOT(onconnectbtn()));
     connect(ui->clearbtn,SIGNAL(clicked(bool)),this,SLOT(onclearbtn()));
+    connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(oncheckbox(int)));
 
+}
+
+//选择框响应事件
+void Widget::oncheckbox(int state)
+{
+    qDebug()<<"void Widget::oncheckbox()";
+    if(state==0)
+    {
+        qDebug()<<"0:"<<state;
+        ui->lineEdit->setVisible(false);
+        ui->useredit->setEnabled(true);
+        ui->passwdedit->setEnabled(true);
+        ui->ipedit->setEnabled(true);
+        ui->portedit->setEnabled(true);
+        ui->channeledit->setEnabled(true);
+    }else
+    {
+        qDebug()<<"1:"<<state;
+        ui->lineEdit->setVisible(true);
+        ui->useredit->setEnabled(false);
+        ui->passwdedit->setEnabled(false);
+        ui->ipedit->setEnabled(false);
+        ui->portedit->setEnabled(false);
+        ui->channeledit->setEnabled(false);
+    }
 }
 
 //连接按钮响应事件
@@ -29,7 +55,20 @@ void Widget::onconnectbtn()
 //开启捕获图片的线程
     Controller *con=new Controller;
     connect(con,SIGNAL(image(const QImage&)),ui->label,SLOT(loadimage(const QImage&)));
-    con->operate(ui->lineEdit->text().trimmed());
+
+    QString url;
+    if(!ui->checkBox->isChecked())
+    {
+        url=QString("rtsp://%1:%2@%3:%4/h264/ch%5/main/av_stream").arg(ui->useredit->text().trimmed())
+                .arg(ui->passwdedit->text().trimmed())
+                .arg(ui->ipedit->text().trimmed())
+                .arg(ui->portedit->text().trimmed())
+                .arg(ui->channeledit->text().trimmed());
+    }else
+    {
+        url=ui->lineEdit->text().trimmed();
+    }
+    con->operate(url);
 }
 
 //清空按钮响应事件
@@ -44,7 +83,17 @@ void Widget::initwindow()
     this->setWindowTitle("ImageMark");
     this->setFixedSize(870,600);
     ui->label->loadimage(":/background.png");
-    ui->lineEdit->setPlaceholderText("输入摄像机地址");
+    ui->lineEdit->setVisible(false);
+    ui->useredit->setPlaceholderText("输入用户名");
+    ui->useredit->setText("admin");
+    ui->passwdedit->setPlaceholderText("输入密码");
+    ui->passwdedit->setText("ad53937301");
+    ui->ipedit->setPlaceholderText("输入IP");
+    ui->portedit->setPlaceholderText("输入端口号");
+    ui->portedit->setText("554");
+    ui->channeledit->setPlaceholderText("输入通道号");
+    ui->channeledit->setText("1");
+    ui->lineEdit->setPlaceholderText("输入rtsp地址");
 
     // rtsp://admin:ad53937301@49.91.240.8:554/h264/ch1/main/av_stream
     // /Users/xuxudong/Temp/test.avi

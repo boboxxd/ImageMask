@@ -27,7 +27,7 @@ public slots:
     void save();
     void onconnectbtn();
     void onclearbtn();
-
+    void oncheckbox(int state);
 private:
     Ui::Widget *ui;
 
