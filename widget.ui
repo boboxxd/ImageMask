@@ -155,8 +155,14 @@
             </item>
             <item>
              <widget class="QPushButton" name="connectbtn">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>48</height>
+               </size>
+              </property>
               <property name="text">
-               <string>连接</string>
+               <string>获取图片</string>
               </property>
              </widget>
             </item>
