@@ -168,7 +168,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="arrowbtn">
               <property name="icon">
                <iconset resource="icon.qrc">
                 <normaloff>:/arrow.png</normaloff>:/arrow.png</iconset>

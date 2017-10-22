@@ -21,9 +21,9 @@ public:
 signals:
 
 public slots:
-
     void drawRect();//绘制矩形
     void drawPolygon();//绘制多边形
+    void drawArrow();//绘制箭头
     void save();
     void onconnectbtn();
     void onclearbtn();

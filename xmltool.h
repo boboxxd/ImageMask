@@ -3,7 +3,12 @@
 #include<QTXML>
 #include<QFile>
 
+//坐标转string
 QString toString(QPoint point);
+
+///
+/// \brief 写入xml的类
+///
 class XmlTool
 {
 public:

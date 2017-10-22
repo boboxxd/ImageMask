@@ -6,11 +6,10 @@
 #include"xmltool.h"
 ShowLabel::ShowLabel(QWidget *parent) : QLabel(parent)
 {
+    kind=-1;
     setMouseTracking(true);
-    this->setToolTipDuration(1000);
-    //图形选项：0：矩形 1：多边形
-    //kind=0;
 }
+
 void ShowLabel::setKind(int i)
 {
     kind=i;
@@ -33,12 +32,8 @@ void ShowLabel::loadimage(const QImage &_image)
     imagewidth=image.width();
     imageheight=image.height();
     if(this->width()<imagewidth||this->height()<imageheight)
-    {
-        qDebug()<<"if(this->width()<imagewidth||this->height()<image->height())";
-        //scaleimage=QImage("/Users/xuxudong/Temp/2017101256171001.jpg").scaled(this->width(),this->height(),Qt::KeepAspectRatio);
+    {      
         scaleimage=image.scaled(this->width(),this->height(),Qt::KeepAspectRatio);
-qDebug()<<scaleimage.depth();
-
         widthrate=scaleimage.width()*1.0/imagewidth;
         heightrate=scaleimage.height()*1.0/imageheight;
     }else
@@ -65,7 +60,7 @@ void ShowLabel::resizeEvent(QResizeEvent *e)
 
 void ShowLabel::paintEvent(QPaintEvent *e)
 {
-qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
+    qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
     painter=new QPainter(this);
     painter->setRenderHint(QPainter::Antialiasing,true);
     if(!scaleimage.isNull())
@@ -74,16 +69,13 @@ qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
     }else{}
 
 
-
-
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
     painter->begin(&scaleimage);
     painter->setPen(QPen(Qt::red,2));
 
 //绘制已经完成的图形
 {
+ /******************************************************************/
         //绘制多边形
         if(polygonvec.size()>=1)
         {
@@ -94,7 +86,7 @@ qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
                      painter->drawLine(tmp.GetPoints()[j],tmp.GetPoints()[j+1]);
             }
         }
-
+/******************************************************************/
         //绘制矩形
         if(rectvec.size()>=1)
         {
@@ -104,10 +96,22 @@ qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
                      painter->drawRect(QRect(tmp.first(),tmp.last()));
             }
         }
+/******************************************************************/
+        //绘制箭头
 
 }
 
-
+/******************************************************************/
+    if(kind==0)
+    {
+            if(rect.size()>=1)
+            {
+             if(rect.iscomplete==false)
+                painter->drawRect(QRect(rect.first(),cur));
+            painter->end();
+            }
+    }
+/******************************************************************/
 if(kind==1)
 {
 //绘制已经绘制成功的线段
@@ -121,17 +125,13 @@ if(kind==1)
 
     painter->end();
     }
+}
+/******************************************************************/
+if(kind==2)
+{
 
 }
-if(kind==0)
-{
-        if(rect.size()>=1)
-        {
-         if(rect.iscomplete==false)
-            painter->drawRect(QRect(rect.first(),cur));
-        painter->end();
-        }
-}
+
 }
 
 
@@ -140,22 +140,14 @@ if(kind==0)
 
 void ShowLabel::mousePressEvent(QMouseEvent *e)
 {
-
-
     switch(e->button())
     {
+//###############################鼠标左击事件##############################################
         case Qt::LeftButton:
         setCursor(Qt::CrossCursor);
-        if(kind==1){
-            if(polyon.iscomplete==true)
-            {
-                Polygon tmp;
-                polyon=tmp;
-            }
 
-            cur=e->pos();
-            polyon.add(cur);
-        }
+/******************************************************************/
+//绘制矩形
         if(kind==0)
         {
             cur=e->pos();
@@ -170,11 +162,30 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
                 Rect tmp;
                 rect=tmp;
             }
-            //rect.add(cur);
-
         }
-        break;
 
+/******************************************************************/
+//绘制多边形
+        if(kind==1){
+            if(polyon.iscomplete==true)
+            {
+                Polygon tmp;
+                polyon=tmp;
+            }
+
+            cur=e->pos();
+            polyon.add(cur);
+        }
+/******************************************************************/
+//绘制箭头
+       if(kind==2)
+       {
+           //绘制箭头
+       }
+
+/******************************************************************/
+        break;
+//###################################鼠标右击事件##########################################
         case Qt::RightButton:
         if(kind==1)
         {
@@ -207,7 +218,6 @@ void ShowLabel::mouseReleaseEvent(QMouseEvent *e)
 
 QVector<QPoint> ShowLabel::getpoints()
 {
-
     switch(kind)
     {
     case 0:
@@ -233,9 +243,10 @@ void ShowLabel::clear()
     polygonvec.clear();
     update();
 }
+
 bool ShowLabel::isEmpty()
 {
-    if(rectvec.isEmpty()||polygonvec.isEmpty())
+    if(rectvec.isEmpty()||polygonvec.isEmpty()||rect.isempty()||polyon.isempty())
         return true;
     return false;
 }

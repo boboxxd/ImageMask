@@ -9,7 +9,9 @@ using namespace cv;
 
 
 
-
+///
+/// \brief 取图工作类
+///
 class GetImage:public QObject
 {
     Q_OBJECT
@@ -19,6 +21,11 @@ public slots:
     void doWork(const QString &);
 };
 
+
+
+///
+/// \brief 线程控制类
+///
 class Controller:public QObject
 {
     Q_OBJECT
