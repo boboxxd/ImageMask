@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QWidget>
-
-class LogWindow : public QWidget
+#include<QTextBrowser>
+class LogWindow : public QTextBrowser
 {
     Q_OBJECT
 public:
@@ -13,6 +13,7 @@ public:
 signals:
 
 public slots:
+    void ShowMsg(const QString&);
 };
 
 #endif // LOGWINDOW_H

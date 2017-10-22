@@ -17,6 +17,7 @@ class GetImage:public QObject
     Q_OBJECT
 signals:
     void resultReady(const QImage &image);
+    void msg(const QString &);
 public slots:
     void doWork(const QString &);
 };
@@ -38,6 +39,7 @@ class Controller:public QObject
               connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
               connect(this, &Controller::operate, worker, &GetImage::doWork);
               connect(worker, &GetImage::resultReady, this, &Controller::handleResults);
+              connect(worker,&GetImage::msg,this,&Controller::getmsg);
               workerThread.start();
           }
           ~Controller() {
@@ -47,9 +49,11 @@ class Controller:public QObject
 
       public slots:
           void handleResults(const QImage & );
+          void getmsg(const QString &);
       signals:
           void operate(const QString &);
           void image(const QImage &image);
+          void msg(const QString &);
 
 };
 

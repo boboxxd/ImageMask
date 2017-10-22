@@ -3,7 +3,7 @@
 #include<QPixmap>
 #include"getimage.h"
 #include"xmltool.h"
-
+#include"logwindow.h"
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -18,6 +18,7 @@ Widget::Widget(QWidget *parent) :
     connect(ui->connectbtn,SIGNAL(clicked(bool)),this,SLOT(onconnectbtn()));
     connect(ui->clearbtn,SIGNAL(clicked(bool)),this,SLOT(onclearbtn()));
     connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(oncheckbox(int)));
+    connect(this,SIGNAL(msg(const QString&)),ui->logwnd,SLOT(ShowMsg(const QString &)));
 
 }
 
@@ -55,7 +56,7 @@ void Widget::onconnectbtn()
 //开启捕获图片的线程
     Controller *con=new Controller;
     connect(con,SIGNAL(image(const QImage&)),ui->label,SLOT(loadimage(const QImage&)));
-
+    connect(con,SIGNAL(msg(const QString &)),ui->logwnd,SLOT(ShowMsg(const QString &)));
     QString url;
     if(!ui->checkBox->isChecked())
     {
@@ -94,6 +95,7 @@ void Widget::initwindow()
     ui->channeledit->setPlaceholderText("输入通道号");
     ui->channeledit->setText("1");
     ui->lineEdit->setPlaceholderText("输入rtsp地址");
+
 
     // rtsp://admin:ad53937301@49.91.240.8:554/h264/ch1/main/av_stream
     // /Users/xuxudong/Temp/test.avi
@@ -141,8 +143,10 @@ void Widget::drawArrow()
 //保存为xml文件
 void Widget::save()
 {
+    qDebug()<<"void Widget::save()";
     if(ui->label->isEmpty()==false)
     {
         XmlTool  xml("area.xml",ui->label->getpoints());
     }
+    emit msg(ui->label->toLog());
 }

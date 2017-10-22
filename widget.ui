@@ -17,17 +17,31 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,1,2">
      <item>
-      <widget class="ShowLabel" name="label">
-       <property name="mouseTracking">
-        <bool>true</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="15,0,2">
+       <item>
+        <widget class="ShowLabel" name="label">
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>日志信息</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="LogWindow" name="logwnd"/>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="Line" name="line">
@@ -278,6 +292,11 @@
    <class>ShowLabel</class>
    <extends>QLabel</extends>
    <header>showlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LogWindow</class>
+   <extends>QTextBrowser</extends>
+   <header>logwindow.h</header>
   </customwidget>
  </customwidgets>
  <resources>

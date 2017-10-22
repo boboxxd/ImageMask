@@ -47,6 +47,8 @@ public:
     //判断界面上是否为空
     bool isEmpty();
 
+    //记录保存日志
+    QString toLog();
 
 signals:
 

@@ -25,13 +25,15 @@ SOURCES += main.cpp\
     common.cpp \
     showlabel.cpp \
     xmltool.cpp \
-    getimage.cpp
+    getimage.cpp \
+    logwindow.cpp
 
 HEADERS  += widget.h \
     common.h \
     showlabel.h \
     xmltool.h \
-    getimage.h
+    getimage.h \
+    logwindow.h
 
 FORMS    += widget.ui
 

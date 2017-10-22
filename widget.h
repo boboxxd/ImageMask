@@ -19,7 +19,7 @@ public:
     ~Widget();
 
 signals:
-
+    void msg(const QString &);
 public slots:
     void drawRect();//绘制矩形
     void drawPolygon();//绘制多边形
