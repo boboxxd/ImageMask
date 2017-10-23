@@ -14,6 +14,7 @@ XmlTool::XmlTool(const QString &filename,QVector<QPoint> vec)
 
 void XmlTool::setFile(const QString &filename,QVector<QPoint> vec)
 {
+    qDebug()<<"void XmlTool::setFile(const QString &filename,QVector<QPoint> vec)";
     file.setFileName(filename);
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
      {

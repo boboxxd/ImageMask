@@ -6,9 +6,6 @@
 #include<QThread>
 using namespace cv;
 
-
-
-
 ///
 /// \brief 取图工作类
 ///

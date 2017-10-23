@@ -246,7 +246,7 @@ void ShowLabel::clear()
 
 bool ShowLabel::isEmpty()
 {
-    if(rectvec.isEmpty()||polygonvec.isEmpty()||rect.isempty()||polyon.isempty())
+    if(rectvec.isEmpty()&&polygonvec.isEmpty()&&rect.isempty()&&polyon.isempty())
         return true;
     return false;
 }

@@ -144,10 +144,21 @@ void Widget::drawArrow()
 //保存为xml文件
 void Widget::save()
 {
+
     qDebug()<<"void Widget::save()";
+    emit msg(ui->label->toLog());
+
     if(ui->label->isEmpty()==false)
     {
-        XmlTool  xml("area.xml",ui->label->getpoints());
+        qDebug()<<"write xml";
+        auto vec=ui->label->getpoints();
+        QVector<QPoint> tmp;
+        for(auto i=vec.begin();i!=vec.end();i++)
+        {
+           tmp.push_back(QPoint(i->x()/ui->label->getfactor().ratex,i->y()/ui->label->getfactor().ratey));
+        }
+
+        XmlTool  xml("Area.xml",tmp);
     }
-    emit msg(ui->label->toLog());
+
 }
