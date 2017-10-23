@@ -206,7 +206,7 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
 void ShowLabel::mouseMoveEvent(QMouseEvent *e)
 {
     cur=e->pos();
-    this->setToolTip(toString(cur));
+    this->setToolTip(toString(QPoint(cur.x()/widthrate,cur.y()/heightrate)));
     update();
 }
 
@@ -266,7 +266,7 @@ QString ShowLabel::toLog()
     for(int i=0;i<vec.size();i++)
     {
         QPoint tmp(vec.at(i).x()/widthrate,vec.at(i).y()/heightrate);
-        logmsg+=" "+toString(tmp);
+        logmsg+=' '+toString(tmp);
     }
     return logmsg;
 }
