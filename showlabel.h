@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QImage>
 #include<QResizeEvent>
+#include<memory>
 #include"common.h"
 
 //图形选项：0：矩形 1：多边形 2:箭头
@@ -35,6 +36,11 @@ public:
     void mouseReleaseEvent(QMouseEvent *e);
     void resizeEvent(QResizeEvent *e);
 
+    void drawLine(QPoint,QPoint,int type=0);
+    void drawRect(QPoint,QPoint,int type=0);//type:报警区域/处理区域
+    void drawPolygon(Polygon&,int type=0);
+    void drawArrow(QPoint,QPoint,int type=0);
+
     //返回所有点的坐标
     QVector<QPoint> getpoints();
 
@@ -51,17 +57,25 @@ public:
     //记录保存日志
     QString toLog();
 
+    void allocate(std::shared_ptr<RectAbstract> m,int type);
+
 signals:
 
 public slots:
     //选择绘制图形type
     void setKind(int i);
 
+    //选择区域类型
+    void setType(int i);
+
     //载入本地图片
     void loadimage(QString imagename);
 
     //载入内存中的文件
     void loadimage(const QImage& _image);
+
+    QVector<std::shared_ptr<RectAbstract>> getAlarmAreas();
+    QVector<std::shared_ptr<RectAbstract>> getHandleAreas();
 private:
     QPainter *painter;
 
@@ -85,16 +99,24 @@ private:
     //存储当前所绘图形
     Polygon polyon;
     Rect rect;
+    Arrow arrow;
 
     //存储已经绘制好的图形
     QVector<Rect> rectvec;
     QVector<Polygon> polygonvec;
+    QVector<Arrow> arrowvec;
 
-    //
+    //报警区域和处理区域
+    QVector<std::shared_ptr<RectAbstract>> AlarmAreaVec;
+    QVector<std::shared_ptr<RectAbstract>> HandleAreaVec;
+
+
     bool isfinished=false;
 
     //图形type
     int kind;
+    //区域类别
+    int type;
 };
 
 #endif // SHOWLABEL_H

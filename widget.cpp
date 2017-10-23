@@ -19,8 +19,38 @@ Widget::Widget(QWidget *parent) :
     connect(ui->clearbtn,SIGNAL(clicked(bool)),this,SLOT(onclearbtn()));
     connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(oncheckbox(int)));
     connect(this,SIGNAL(msg(const QString&)),ui->logwnd,SLOT(ShowMsg(const QString &)));
+    connect(&radiogroup,SIGNAL(buttonClicked(int)),ui->label,SLOT(setType(int)));
 
 }
+//初始化窗口
+void Widget::initwindow()
+{
+   this->setWindowTitle("ImageMark");
+   this->setFixedSize(870,600);
+
+   this->radiogroup.addButton(ui->alarmareabtn,0);
+   this->radiogroup.addButton(ui->handleareabtn,1);
+
+   ui->alarmareabtn->setChecked(true);
+   ui->label->loadimage(":/background.png");
+   ui->lineEdit->setVisible(false);
+   ui->useredit->setPlaceholderText("输入用户名");
+   ui->useredit->setText("admin");
+   ui->passwdedit->setPlaceholderText("输入密码");
+   ui->passwdedit->setText("ad53937301");
+   ui->ipedit->setPlaceholderText("输入IP");
+   ui->ipedit->setText("49.91.240.8");
+   ui->portedit->setPlaceholderText("输入端口号");
+   ui->portedit->setText("554");
+   ui->channeledit->setPlaceholderText("输入通道号");
+   ui->channeledit->setText("1");
+   ui->lineEdit->setPlaceholderText("输入rtsp地址");
+
+
+   // rtsp://admin:ad53937301@49.91.240.8:554/h264/ch1/main/av_stream
+   // /Users/xuxudong/Temp/test.avi
+}
+
 
 //选择框响应事件
 void Widget::oncheckbox(int state)
@@ -76,31 +106,10 @@ void Widget::onconnectbtn()
  void Widget::onclearbtn()
  {
      ui->label->clear();
+     ui->logwnd->clear();
  }
 
- //初始化窗口
-void Widget::initwindow()
-{
-    this->setWindowTitle("ImageMark");
-    this->setFixedSize(870,600);
-    ui->label->loadimage(":/background.png");
-    ui->lineEdit->setVisible(false);
-    ui->useredit->setPlaceholderText("输入用户名");
-    ui->useredit->setText("admin");
-    ui->passwdedit->setPlaceholderText("输入密码");
-    ui->passwdedit->setText("ad53937301");
-    ui->ipedit->setPlaceholderText("输入IP");
-    ui->ipedit->setText("49.91.240.8");
-    ui->portedit->setPlaceholderText("输入端口号");
-    ui->portedit->setText("554");
-    ui->channeledit->setPlaceholderText("输入通道号");
-    ui->channeledit->setText("1");
-    ui->lineEdit->setPlaceholderText("输入rtsp地址");
 
-
-    // rtsp://admin:ad53937301@49.91.240.8:554/h264/ch1/main/av_stream
-    // /Users/xuxudong/Temp/test.avi
-}
 
 Widget::~Widget()
 {
@@ -111,11 +120,6 @@ Widget::~Widget()
 void Widget::drawRect()
 {
     qDebug()<<"void Widget::drawRect()";
-    //if(ui->label->isEmpty()==false)
-    //{
-        ui->label->clear();//目的是在界面上只能出现一个区域
-    //}else{}
-
     ui->label->setKind(0);
     ui->label->update();
 }
@@ -124,11 +128,6 @@ void Widget::drawRect()
 void Widget::drawPolygon()
 {
     qDebug()<<"void Widget::drawPolygon()";
-    //if(ui->label->isEmpty()==false)
-    //{
-        ui->label->clear();//目的是在界面上只能出现一个区域
-    //}else{}
-
     ui->label->setKind(1);
     ui->label->update();
 }
@@ -136,7 +135,7 @@ void Widget::drawPolygon()
 void Widget::drawArrow()
 {
     qDebug()<<"void Widget::drawArrow()";
-    ui->label->clear();//目的是在界面上只能出现一个区域
+
     ui->label->setKind(2);
     ui->label->update();
 }
@@ -145,20 +144,20 @@ void Widget::drawArrow()
 void Widget::save()
 {
 
+    ui->logwnd->clear();
     qDebug()<<"void Widget::save()";
     emit msg(ui->label->toLog());
 
-    if(ui->label->isEmpty()==false)
-    {
-        qDebug()<<"write xml";
-        auto vec=ui->label->getpoints();
-        QVector<QPoint> tmp;
-        for(auto i=vec.begin();i!=vec.end();i++)
-        {
-           tmp.push_back(QPoint(i->x()/ui->label->getfactor().ratex,i->y()/ui->label->getfactor().ratey));
-        }
-
-        XmlTool  xml("Area.xml",tmp);
-    }
+//        qDebug()<<"write xml";
+//        if(!ui->label->getpoints().isEmpty())
+//        {
+//        auto vec=ui->label->getpoints();
+//        QVector<QPoint> tmp;
+//        for(auto i=vec.begin();i!=vec.end();i++)
+//        {
+//           tmp.push_back(QPoint(i->x()/ui->label->getfactor().ratex,i->y()/ui->label->getfactor().ratey));
+//        }
+//        XmlTool  xml("Area.xml",tmp);
+//    }
 
 }

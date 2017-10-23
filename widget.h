@@ -2,8 +2,9 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include<QLabel>
-#include"common.h"
+#include <QLabel>
+#include <QButtonGroup>
+#include "common.h"
 
 namespace Ui {
 class Widget;
@@ -30,6 +31,7 @@ public slots:
     void oncheckbox(int state);
 private:
     Ui::Widget *ui;
+    QButtonGroup radiogroup;
 
 };
 

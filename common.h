@@ -6,13 +6,6 @@
 #include<QPoint>
 #include<QDebug>
 
-
-class Arrow
-{
-
-};
-
-
 class RectAbstract
 {
 public:
@@ -21,14 +14,17 @@ public:
     //返回图形的所有坐标点
     virtual QVector<QPoint> GetPoints()
     {
+        qDebug()<<"QVector<QPoint> GetPoints()";
         QVector<QPoint> tmp=points;
+        qDebug()<<tmp.at(0);
         return tmp;
     }
 
     //添加一个坐标点
-    virtual int add(QPoint point) //返回当前坐标个数
+    virtual int add(QPoint point,int _type) //返回当前坐标个数
     {
         points.append(point);
+        type=_type;
         mindex++;
         return this->size();
     }
@@ -47,16 +43,6 @@ public:
    virtual int del()//返回当前坐标个数
     {
         points.clear();
-//        if(!isempty())
-//        {
-//            return this->size();
-//        }else
-//        {
-//            points.pop_back();
-//            points.clear();
-//            return this->size();
-//        }
-
     }
 
     //清空所有坐标
@@ -81,9 +67,23 @@ public:
      return mindex;
  }
 
+//获取监控出/入
+ int getstate()
+ {
+    return state;
+ }
+//设置人口出/入
+ void setstate(int _state)
+ {
+    state=_state;
+ }
+
+    int type;//区域类型
+
 protected:
    QVector<QPoint> points;
    int mindex=0;
+   int state;//人员出入状态 0：in; 1:out;  2:both
 };
 
 //矩形---斜拉
@@ -111,9 +111,15 @@ class  Polygon:public RectAbstract
 public:
     Polygon()=default;
     bool iscomplete=false;
+
 };
 
 
-
+class Arrow:public RectAbstract
+{
+public:
+    Arrow()=default;
+    bool iscomplete=false;
+};
 
 #endif // COMMON_H

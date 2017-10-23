@@ -7,12 +7,18 @@
 ShowLabel::ShowLabel(QWidget *parent) : QLabel(parent)
 {
     kind=-1;
+    type=0;
     setMouseTracking(true);
 }
 
 void ShowLabel::setKind(int i)
 {
     kind=i;
+}
+
+void ShowLabel::setType(int i)
+{
+    type=i;
 }
 
 void ShowLabel::loadimage(QString imagename)
@@ -58,6 +64,95 @@ void ShowLabel::resizeEvent(QResizeEvent *e)
     update();
 }
 
+void ShowLabel::drawLine(QPoint begin,QPoint end,int type)
+{
+    switch(type)
+    {
+        case 0://报警区域
+            painter->setPen(QPen(Qt::red,2));
+        break;
+
+        case 1: //处理区域
+            painter->setPen(QPen(Qt::blue,2));
+        break;
+    }
+    painter->drawLine(begin,end);
+}
+
+void ShowLabel::drawRect(QPoint begin,QPoint end,int type)//type:报警区域/处理区域
+{
+    switch(type)
+    {
+        case 0://报警区域
+            painter->setPen(QPen(Qt::red,2));
+        break;
+
+        case 1: //处理区域
+            painter->setPen(QPen(Qt::blue,2));
+        break;
+    }
+     painter->drawRect(QRect(begin,end));
+}
+
+void ShowLabel::drawPolygon(Polygon& polygon,int type)
+{
+    switch(type)
+    {
+        case 0://报警区域
+            painter->setPen(QPen(Qt::red,2));
+        break;
+
+        case 1: //处理区域
+            painter->setPen(QPen(Qt::blue,2));
+        break;
+    }
+    for(int i=0;i<polygon.size()-1;i++)
+        drawLine(polygon.GetPoints()[i],polygon.GetPoints()[i+1],type);
+}
+
+//绘制箭头的工具函数
+void ShowLabel::drawArrow(QPoint begin,QPoint end,int type)
+{
+        int x1 = begin.x();                                     //取points[0]起点的x
+        int y1 = begin.y();                                     //取points[0]起点的y
+        int x2 = end.x();                                       //取points[count-1]终点的x
+        int y2 = end.y();                                       //取points[count-1]终点的y
+        int l = 10.0;                                           //箭头的长度
+        int a = 1;                                            //箭头与线段角度
+        int x3 = x2 - l * cos(atan2((y2 - y1) , (x2 - x1)) - a);//计算箭头的终点（x3,y3）
+        int y3 = y2 - l * sin(atan2((y2 - y1) , (x2 - x1)) - a);
+        int x4 = x2 - l * sin(atan2((x2 - x1) , (y2 - y1)) - a);//计算箭头的终点（x4,y4）
+        int y4 = y2 - l * cos(atan2((x2 - x1) , (y2 - y1)) - a);
+        switch(type)
+        {
+            case 0://报警区域
+                painter->setPen(QPen(Qt::red,2));
+            break;
+
+            case 1: //处理区域
+                painter->setPen(QPen(Qt::blue,2));
+            break;
+        }
+        drawLine(QPoint(x2,y2),QPoint(x3,y3),type);                                 //绘制箭头(x2,y2,x3,y3)
+        drawLine(QPoint(x2,y2),QPoint(x4,y4),type);                                 //绘制箭头(x2,y2,x4,y4)
+        drawLine(begin,end,type);                                   //绘制主干箭头(begin,end)
+}
+
+void ShowLabel::allocate(std::shared_ptr<RectAbstract> m,int type)
+{
+    switch(type)
+    {
+    case 0:
+        AlarmAreaVec.append(m);
+        break;
+    case 1:
+        HandleAreaVec.append(m);
+        break;
+    default:
+        break;
+    }
+}
+
 void ShowLabel::paintEvent(QPaintEvent *e)
 {
     qDebug()<<"void ShowLabel::paintEvent(QPaintEvent *e)";
@@ -82,8 +177,7 @@ void ShowLabel::paintEvent(QPaintEvent *e)
             for(int i=0;i<polygonvec.size();i++)
             {
                 Polygon tmp=polygonvec[i];
-                 for(int j=0;j<tmp.size()-1;j++)
-                     painter->drawLine(tmp.GetPoints()[j],tmp.GetPoints()[j+1]);
+                drawPolygon(tmp,tmp.type);
             }
         }
 /******************************************************************/
@@ -93,12 +187,19 @@ void ShowLabel::paintEvent(QPaintEvent *e)
             for(int i=0;i<rectvec.size();i++)
             {
                 Rect tmp=rectvec[i];
-                     painter->drawRect(QRect(tmp.first(),tmp.last()));
+                drawRect(tmp.first(),tmp.last(),tmp.type);
+            }
+        }
+
+        if(arrowvec.size()>=1)
+        {
+            for(int i=0;i<arrowvec.size();i++)
+            {
+                Arrow tmp=arrowvec[i];
+                     drawArrow(tmp.first(),tmp.last(),tmp.type);
             }
         }
 /******************************************************************/
-        //绘制箭头
-
 }
 
 /******************************************************************/
@@ -107,7 +208,7 @@ void ShowLabel::paintEvent(QPaintEvent *e)
             if(rect.size()>=1)
             {
              if(rect.iscomplete==false)
-                painter->drawRect(QRect(rect.first(),cur));
+                 drawRect(rect.first(),cur,type);
             painter->end();
             }
     }
@@ -117,26 +218,25 @@ if(kind==1)
 //绘制已经绘制成功的线段
     if(polyon.size()>=1)
     {
-     for(int i=0;i<polyon.size()-1;i++)
-         painter->drawLine(polyon.GetPoints()[i],polyon.GetPoints()[i+1]);
+        drawPolygon(polyon,polyon.type);
 //绘制正在绘制的线段
      if(polyon.iscomplete==false)
-        painter->drawLine(polyon.last(),cur);
-
+        drawLine(polyon.last(),cur,type);
     painter->end();
     }
 }
 /******************************************************************/
 if(kind==2)
 {
-
+    if(arrow.size()>=1)
+    {
+     if(arrow.iscomplete==false)
+        drawArrow(arrow.first(),cur,type);
+    painter->end();
+    }
 }
 
 }
-
-
-
-
 
 void ShowLabel::mousePressEvent(QMouseEvent *e)
 {
@@ -151,7 +251,7 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
         if(kind==0)
         {
             cur=e->pos();
-            rect.add(cur);
+            rect.add(cur,type);
             if(rect.size()==2)
             {
                rect.iscomplete=true;
@@ -159,6 +259,7 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
             if(rect.iscomplete==true)
             {
                 rectvec.append(rect);
+                allocate(std::make_shared<Rect>(rect),rect.type);
                 Rect tmp;
                 rect=tmp;
             }
@@ -174,13 +275,27 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
             }
 
             cur=e->pos();
-            polyon.add(cur);
+            polyon.add(cur,type);
         }
 /******************************************************************/
 //绘制箭头
        if(kind==2)
        {
            //绘制箭头
+           cur=e->pos();
+           arrow.add(cur,type);
+           if(arrow.size()==2)
+           {
+              arrow.iscomplete=true;
+           }
+           if(arrow.iscomplete==true)
+           {
+               arrowvec.append(arrow);
+               allocate(std::make_shared<Arrow>(arrow),arrow.type);
+               Arrow tmp;
+               arrow=tmp;
+           }
+
        }
 
 /******************************************************************/
@@ -191,9 +306,10 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
         {
         if(polyon.iscomplete==false)
         {
-            polyon.add(polyon.first());
+            polyon.add(polyon.first(),type);
             polyon.iscomplete=true;
             polygonvec.append(polyon);
+            allocate(std::make_shared<Polygon>(polyon),polyon.type);
             polyon.clear();
             qDebug()<<polyon.size();
         }
@@ -218,35 +334,43 @@ void ShowLabel::mouseReleaseEvent(QMouseEvent *e)
 
 QVector<QPoint> ShowLabel::getpoints()
 {
+    qDebug()<<"QVector<QPoint> ShowLabel::getpoints()";
+
     switch(kind)
     {
     case 0:
         if(!rectvec.isEmpty())
         return rectvec.first().GetPoints();
-
         break;
     case 1:
         if(!polygonvec.isEmpty())
         return polygonvec.first().GetPoints();
-
         break;
+
     default:
+        return rectvec.first().GetPoints();
         break;
     }
+
+
 }
 
 void ShowLabel::clear()
 {
     rect.clear();
     polyon.clear();
+    arrow.clear();
     rectvec.clear();
     polygonvec.clear();
+    arrowvec.clear();
+    AlarmAreaVec.clear();
+    HandleAreaVec.clear();
     update();
 }
 
 bool ShowLabel::isEmpty()
 {
-    if(rectvec.isEmpty()&&polygonvec.isEmpty()&&rect.isempty()&&polyon.isempty())
+    if(rectvec.isEmpty()&&polygonvec.isEmpty()&&arrowvec.isEmpty()&&arrow.isempty()&&rect.isempty()&&polyon.isempty())
         return true;
     return false;
 }
@@ -259,14 +383,49 @@ Factor ShowLabel::getfactor()
     return factor;
 }
 
+QVector<std::shared_ptr<RectAbstract>> ShowLabel::getAlarmAreas()
+{
+    return AlarmAreaVec;
+}
+
+QVector<std::shared_ptr<RectAbstract>> ShowLabel::getHandleAreas()
+{
+    return HandleAreaVec;
+}
+
 QString ShowLabel::toLog()
 {
-    QString logmsg("已设置监控区域：\n");
-    auto vec=this->getpoints();    
-    for(int i=0;i<vec.size();i++)
+    qDebug()<<"QString ShowLabel::toLog()";
+    QString logmsg("\n--begin-----------------------------------------------------\n已设置报警区域：\n");
+    auto p=getAlarmAreas();
+    if(p.size()==0){logmsg+="(空)\n";}
+    for(int i=0;i<p.size();i++)
     {
-        QPoint tmp(vec.at(i).x()/widthrate,vec.at(i).y()/heightrate);
-        logmsg+=' '+toString(tmp);
+        if(i==p.size()-1){logmsg+='\n';}
+        logmsg+=QString("#%1\t").arg(i);
+        auto vec=p[i]->GetPoints();
+        for(int j=0;j<vec.size();j++)
+        {
+            QPoint tmp(vec.at(j).x()/widthrate,vec.at(j).y()/heightrate);
+            logmsg+=' '+toString(tmp);
+        }
     }
+
+    logmsg+="\n已设置处理区域：\n";
+    auto q=getHandleAreas();
+    if(q.size()==0){logmsg+="(空)\n";}
+    for(int i=0;i<q.size();i++)
+    {
+        if(i==q.size()-1){logmsg+='\n';}
+        logmsg+=QString("#%1\t").arg(i);
+        auto vec=q[i]->GetPoints();
+        for(int j=0;j<vec.size();j++)
+        {
+            QPoint tmp(vec.at(j).x()/widthrate,vec.at(j).y()/heightrate);
+            logmsg+=' '+toString(tmp);
+        }
+    }
+    logmsg+="\n--end-------------------------------------------------------";
     return logmsg;
+
 }
