@@ -90,6 +90,7 @@ void Widget::initwindow()
     ui->passwdedit->setPlaceholderText("输入密码");
     ui->passwdedit->setText("ad53937301");
     ui->ipedit->setPlaceholderText("输入IP");
+    ui->ipedit->setText("49.91.240.8");
     ui->portedit->setPlaceholderText("输入端口号");
     ui->portedit->setText("554");
     ui->channeledit->setPlaceholderText("输入通道号");
@@ -110,10 +111,10 @@ Widget::~Widget()
 void Widget::drawRect()
 {
     qDebug()<<"void Widget::drawRect()";
-    if(ui->label->isEmpty()==false)
-    {
+    //if(ui->label->isEmpty()==false)
+    //{
         ui->label->clear();//目的是在界面上只能出现一个区域
-    }else{}
+    //}else{}
 
     ui->label->setKind(0);
     ui->label->update();
@@ -123,10 +124,10 @@ void Widget::drawRect()
 void Widget::drawPolygon()
 {
     qDebug()<<"void Widget::drawPolygon()";
-    if(ui->label->isEmpty()==false)
-    {
+    //if(ui->label->isEmpty()==false)
+    //{
         ui->label->clear();//目的是在界面上只能出现一个区域
-    }else{}
+    //}else{}
 
     ui->label->setKind(1);
     ui->label->update();

@@ -262,11 +262,11 @@ Factor ShowLabel::getfactor()
 QString ShowLabel::toLog()
 {
     QString logmsg("已设置监控区域：\n");
-    auto vec=this->getpoints();
+    auto vec=this->getpoints();    
     for(int i=0;i<vec.size();i++)
     {
-        logmsg+=" "+toString(vec.at(i));
+        QPoint tmp(vec.at(i).x()/widthrate,vec.at(i).y()/heightrate);
+        logmsg+=" "+toString(tmp);
     }
-    //logmsg+=QString('-',10);
     return logmsg;
 }
