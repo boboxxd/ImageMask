@@ -15,13 +15,15 @@ Widget::Widget(QWidget *parent) :
     connect(ui->polygonbtn,SIGNAL(clicked(bool)),this,SLOT(drawPolygon()));
     connect(ui->arrowbtn,SIGNAL(clicked(bool)),this,SLOT(drawArrow()));
     connect(ui->savebtn,SIGNAL(clicked(bool)),this,SLOT(save()));
+
     connect(ui->connectbtn,SIGNAL(clicked(bool)),this,SLOT(onconnectbtn()));
     connect(ui->clearbtn,SIGNAL(clicked(bool)),this,SLOT(onclearbtn()));
     connect(ui->checkBox,SIGNAL(stateChanged(int)),this,SLOT(oncheckbox(int)));
     connect(this,SIGNAL(msg(const QString&)),ui->logwnd,SLOT(ShowMsg(const QString &)));
     connect(&radiogroup,SIGNAL(buttonClicked(int)),ui->label,SLOT(setType(int)));
-
+    connect(&radiogroup,SIGNAL(buttonClicked(int)),this,SLOT(setbutton(int)));
 }
+
 //初始化窗口
 void Widget::initwindow()
 {
@@ -30,6 +32,8 @@ void Widget::initwindow()
 
    this->radiogroup.addButton(ui->alarmareabtn,0);
    this->radiogroup.addButton(ui->handleareabtn,1);
+
+
 
    ui->alarmareabtn->setChecked(true);
    ui->label->loadimage(":/background.png");
@@ -51,6 +55,23 @@ void Widget::initwindow()
    // /Users/xuxudong/Temp/test.avi
 }
 
+void Widget::setbutton(int type)
+{
+    switch(type)
+    {
+        case 0:
+            ui->polygonbtn->setEnabled(true);
+            ui->arrowbtn->setEnabled(true);
+        break;
+
+        case 1:
+            ui->polygonbtn->setEnabled(false);
+            ui->arrowbtn->setEnabled(false);
+        break;
+
+
+    }
+}
 
 //选择框响应事件
 void Widget::oncheckbox(int state)

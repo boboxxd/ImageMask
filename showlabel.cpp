@@ -19,6 +19,8 @@ void ShowLabel::setKind(int i)
 void ShowLabel::setType(int i)
 {
     type=i;
+    if(type==1)
+        kind=0;
 }
 
 void ShowLabel::loadimage(QString imagename)
@@ -205,6 +207,7 @@ void ShowLabel::paintEvent(QPaintEvent *e)
 /******************************************************************/
     if(kind==0)
     {
+
             if(rect.size()>=1)
             {
              if(rect.iscomplete==false)
@@ -291,7 +294,7 @@ void ShowLabel::mousePressEvent(QMouseEvent *e)
            if(arrow.iscomplete==true)
            {
                arrowvec.append(arrow);
-               allocate(std::make_shared<Arrow>(arrow),arrow.type);
+               //allocate(std::make_shared<Arrow>(arrow),arrow.type);
                Arrow tmp;
                arrow=tmp;
            }
@@ -398,18 +401,56 @@ QString ShowLabel::toLog()
     qDebug()<<"QString ShowLabel::toLog()";
     QString logmsg("\n--begin-----------------------------------------------------\n已设置报警区域：\n");
     auto p=getAlarmAreas();
+
+
+
+
+
     if(p.size()==0){logmsg+="(空)\n";}
     for(int i=0;i<p.size();i++)
     {
         if(i==p.size()-1){logmsg+='\n';}
-        logmsg+=QString("#%1\t").arg(i);
+        logmsg+=QString("A%1\t").arg(i);
         auto vec=p[i]->GetPoints();
+
+//-----------------------------------------------------------------------------------------
+        //判断每个区域的出入状态，并写入数据结构中
+        QPolygon pp(vec);
+        int sum=0;
+        for(int m=0;m<arrowvec.size();m++)
+        {
+//out
+            if(pp.containsPoint(arrowvec[m].first(),Qt::OddEvenFill)&&
+                    !pp.containsPoint(arrowvec[m].last(),Qt::OddEvenFill))
+            {
+               p[i]->addstate(1);
+               sum++;
+            }
+//in
+            if(pp.containsPoint(arrowvec[m].last(),Qt::OddEvenFill)&&
+                    !pp.containsPoint(arrowvec[m].first(),Qt::OddEvenFill))
+            {
+                p[i]->addstate(0);
+                sum++;
+            }
+
+        }
+
+        qDebug()<<p[i]->showState();
+
+//----------------------------------------------------------------------------------------------
+
+
         for(int j=0;j<vec.size();j++)
         {
             QPoint tmp(vec.at(j).x()/widthrate,vec.at(j).y()/heightrate);
             logmsg+=' '+toString(tmp);
+            if(j==vec.size()-1)
+                logmsg+='  '+p[i]->showState()+'\n';
         }
     }
+
+
 
     logmsg+="\n已设置处理区域：\n";
     auto q=getHandleAreas();
@@ -417,12 +458,13 @@ QString ShowLabel::toLog()
     for(int i=0;i<q.size();i++)
     {
         if(i==q.size()-1){logmsg+='\n';}
-        logmsg+=QString("#%1\t").arg(i);
+        logmsg+=QString("H%1\t").arg(i);
         auto vec=q[i]->GetPoints();
         for(int j=0;j<vec.size();j++)
         {
             QPoint tmp(vec.at(j).x()/widthrate,vec.at(j).y()/heightrate);
             logmsg+=' '+toString(tmp);
+
         }
     }
     logmsg+="\n--end-------------------------------------------------------";

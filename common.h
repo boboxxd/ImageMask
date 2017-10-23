@@ -4,7 +4,14 @@
 //图形抽象类
 #include<QVector>
 #include<QPoint>
+#include<QPolygon>
+#include<QSet>
 #include<QDebug>
+struct State
+{
+    int in;
+    int out;
+};
 
 class RectAbstract
 {
@@ -15,8 +22,7 @@ public:
     virtual QVector<QPoint> GetPoints()
     {
         qDebug()<<"QVector<QPoint> GetPoints()";
-        QVector<QPoint> tmp=points;
-        qDebug()<<tmp.at(0);
+        QVector<QPoint> tmp=points;      
         return tmp;
     }
 
@@ -67,23 +73,40 @@ public:
      return mindex;
  }
 
-//获取监控出/入
- int getstate()
- {
-    return state;
- }
-//设置人口出/入
- void setstate(int _state)
- {
-    state=_state;
- }
+    void addstate(int i)
+    {
+        state.insert(i);
+    }
+
+    QString showState()
+    {
+        switch(state.size())
+        {
+        case 0:
+            return QString("ALL");
+            break;
+        case 1:
+            if(state.contains(0))
+                return QString("In");
+            return QString("Out");
+            break;
+        case 2:
+            return QString("All");
+            break;
+        default:
+            return QString("All");
+        }
+    }
 
     int type;//区域类型
 
 protected:
    QVector<QPoint> points;
+   QSet<int> state;//0:in;1;out
    int mindex=0;
-   int state;//人员出入状态 0：in; 1:out;  2:both
+   //人员出入状态 0：in; 1:out;  2:both
+
+   //判断线段是否与区域相交
 };
 
 //矩形---斜拉

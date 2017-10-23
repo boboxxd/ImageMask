@@ -17,6 +17,7 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = 0);
     void initwindow();
+
     ~Widget();
 
 signals:
@@ -29,6 +30,7 @@ public slots:
     void onconnectbtn();
     void onclearbtn();
     void oncheckbox(int state);
+    void setbutton(int);
 private:
     Ui::Widget *ui;
     QButtonGroup radiogroup;
