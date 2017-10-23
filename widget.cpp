@@ -169,16 +169,16 @@ void Widget::save()
     qDebug()<<"void Widget::save()";
     emit msg(ui->label->toLog());
 
-//        qDebug()<<"write xml";
-//        if(!ui->label->getpoints().isEmpty())
-//        {
-//        auto vec=ui->label->getpoints();
-//        QVector<QPoint> tmp;
-//        for(auto i=vec.begin();i!=vec.end();i++)
-//        {
-//           tmp.push_back(QPoint(i->x()/ui->label->getfactor().ratex,i->y()/ui->label->getfactor().ratey));
-//        }
-//        XmlTool  xml("Area.xml",tmp);
-//    }
+        qDebug()<<"write xml";
+        if(!ui->label->getpoints().isEmpty())
+        {
+        auto vec=ui->label->getpoints();
+        QVector<QPoint> tmp;
+        for(auto i=vec.begin();i!=vec.end();i++)
+        {
+           tmp.push_back(QPoint(i->x()/ui->label->getfactor().ratex,i->y()/ui->label->getfactor().ratey));
+        }
+        XmlTool  xml("Area.xml",tmp);
+    }
 
 }

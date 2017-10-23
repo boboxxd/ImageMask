@@ -401,11 +401,6 @@ QString ShowLabel::toLog()
     qDebug()<<"QString ShowLabel::toLog()";
     QString logmsg("\n--begin-----------------------------------------------------\n已设置报警区域：\n");
     auto p=getAlarmAreas();
-
-
-
-
-
     if(p.size()==0){logmsg+="(空)\n";}
     for(int i=0;i<p.size();i++)
     {
@@ -424,14 +419,14 @@ QString ShowLabel::toLog()
                     !pp.containsPoint(arrowvec[m].last(),Qt::OddEvenFill))
             {
                p[i]->addstate(1);
-               sum++;
+               //sum++;
             }
 //in
             if(pp.containsPoint(arrowvec[m].last(),Qt::OddEvenFill)&&
                     !pp.containsPoint(arrowvec[m].first(),Qt::OddEvenFill))
             {
                 p[i]->addstate(0);
-                sum++;
+                //sum++;
             }
 
         }
@@ -464,7 +459,8 @@ QString ShowLabel::toLog()
         {
             QPoint tmp(vec.at(j).x()/widthrate,vec.at(j).y()/heightrate);
             logmsg+=' '+toString(tmp);
-
+            if(j==vec.size()-1)
+                logmsg+='\n';
         }
     }
     logmsg+="\n--end-------------------------------------------------------";
