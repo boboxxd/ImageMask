@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QButtonGroup>
 #include "common.h"
-
+#include"sqlhandle.h"
 namespace Ui {
 class Widget;
 }
@@ -34,7 +34,7 @@ public slots:
 private:
     Ui::Widget *ui;
     QButtonGroup radiogroup;
-
+    SqlHandle sql;
 };
 
 #endif // WIDGET_H

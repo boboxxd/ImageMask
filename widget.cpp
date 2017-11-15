@@ -5,7 +5,7 @@
 #include"xmltool.h"
 #include"logwindow.h"
 
-#include"sqlhandle.h"
+
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -13,6 +13,10 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     initwindow();
+
+
+
+
     connect(ui->rectbtn,SIGNAL(clicked(bool)),this,SLOT(drawRect()));
     connect(ui->polygonbtn,SIGNAL(clicked(bool)),this,SLOT(drawPolygon()));
     connect(ui->arrowbtn,SIGNAL(clicked(bool)),this,SLOT(drawArrow()));
@@ -45,7 +49,7 @@ void Widget::initwindow()
    ui->passwdedit->setPlaceholderText("输入密码");
    ui->passwdedit->setText("ad53937301");
    ui->ipedit->setPlaceholderText("输入IP");
-   ui->ipedit->setText("49.91.240.8");
+   ui->ipedit->setText("49.91.240.44");
    ui->portedit->setPlaceholderText("输入端口号");
    ui->portedit->setText("554");
    ui->channeledit->setPlaceholderText("输入通道号");
@@ -169,17 +173,7 @@ void Widget::save()
     ui->logwnd->clear();
     qDebug()<<"void Widget::save()";
     emit msg(ui->label->toLog());
-
-        qDebug()<<"write xml";
-        if(!ui->label->getpoints().isEmpty())
-        {
-        auto vec=ui->label->getpoints();
-        QVector<QPoint> tmp;
-        for(auto i=vec.begin();i!=vec.end();i++)
-        {
-           tmp.push_back(QPoint(i->x()/ui->label->getfactor().ratex,i->y()/ui->label->getfactor().ratey));
-        }
-        XmlTool  xml("Area.xml",tmp);
-    }
-
+    sql.createConnection();
+    sql.createTable();
+    sql.insert();
 }

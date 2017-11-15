@@ -1,91 +1,71 @@
 #include "sqlhandle.h"
 #include <QDebug>
+
 SqlHandle::SqlHandle()
 {
-    database = QSqlDatabase::addDatabase("QSQLITE");
+
 }
 
-bool SqlHandle::connect(const QString& databasename,const QString& host,int port,const QString& username,const QString& passward)
+bool SqlHandle::createConnection()  //创建一个连接
 {
-    database.setDatabaseName(databasename);
-    database.setHostName(host);
-    database.setPort(port),
-    database.setUserName(username);
-    database.setPassword(passward);
-
-    if(database.open())
-    {
-        qDebug()<<QString("connect database:%1 successed!").arg(databasename);
+        db = QSqlDatabase::addDatabase("QSQLITE", "sqlite1");
+        if(!db.database("sqlite1").isOpen())
+        db.setDatabaseName(".//area.db");
+        if( !db.open())
+        {
+            qDebug() << "无法建立数据库连接";
+            return false;
+        }
         return true;
-    }else
-    {
-        qDebug()<<QString("connect database failed!");
-        return false;
-    }
 }
 
-//create
-bool SqlHandle::CreateTable(const QString &cmd)
- {
-     QString create_sql = cmd;//"create table student (id int primary key, name varchar(30), age int)";
-     sql_query.prepare(create_sql);
-     if(!sql_query.exec())
-     {
-        return false;
-     }
-     else
-     {
-         qDebug()<<"Table created!";
-        return true;
-     }
- }
-
-//insert
-bool SqlHandle::Insert(const QString &cmd)
+bool SqlHandle::createTable()       //创建数据库表
 {
-    QString insert_sql = "insert into student values (?, ?, ?)";
-    sql_query.prepare(insert_sql);
-
+        db = QSqlDatabase::database("sqlite1"); //建立数据库连接
+        QSqlQuery query(db);
+        bool success = query.exec("create table automobil(id int primary key,attribute varchar,"
+                                  "type varchar,kind varchar,nation int,carnumber int,elevaltor int,"
+                                  "distance int,oil int,temperature int)");
+        if(success)
+        {
+            qDebug() << QObject::tr("数据库表创建成功！\n");
+            return true;
+        }
+        else
+        {
+            qDebug() << QObject::tr("数据库表创建失败！\n");
+            return false;
+        }
 }
 
-//change
-bool SqlHandle::Modify(const QString &cmd)
+
+//向数据库中插入记录
+bool SqlHandle::insert()
 {
-    QString update_sql = cmd;//"update student set name = :name where id = :id";
-    sql_query.prepare(update_sql);
-    sql_query.bindValue(":name", "Qt");
-    sql_query.bindValue(":id", 1);
-    if(!sql_query.exec())
+    db = QSqlDatabase::database("sqlite1"); //建立数据库连接
+    QSqlQuery query(db);
+    query.prepare("insert into automobil values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    long records = 10;
+    for(int i=0; i<records; i++)
     {
+        query.bindValue(0, i);
+        query.bindValue(1, "四轮");
+        query.bindValue(2, "轿车");
+        query.bindValue(3, "富康");
+        query.bindValue(4, rand()%100);
+        query.bindValue(5, rand()%10000);
+        query.bindValue(6, rand()%300);
+        query.bindValue(7, rand()%200000);
+        query.bindValue(8, rand()%52);
+        query.bindValue(9, rand()%100);
 
+        bool success=query.exec();
+        if(!success)
+        {
+            QSqlError lastError = query.lastError();
+            qDebug() << lastError.driverText() << QString(QObject::tr("插入失败"));
+            return false;
+        }
     }
-    else
-    {
-        qDebug()<<"updated!";
-    }
+    return true;
 }
-
-//delete
-bool SqlHandle::Drop(const QString &cmd)
-{
-
-}
-
-//query
-bool SqlHandle::Querry(const QString &cmd)
-{
-    QString select_sql = "select id, name from student";
-    sql_query.prepare(select_sql);
-    if(!sql_query.exec())
-    {
-       return false;
-    }
-    else
-    {
-        qDebug()<<"Table Querried!";
-       return true;
-    }
-}
-
-
-
