@@ -1,17 +1,18 @@
 #include "getimage.h"
 #include<QDebug>
-
+Mat srcImage;
 void GetImage::doWork(const QString &path)
 {
     qDebug()<<"void GetImage::doWork(const QString &path)";    
     emit msg("正在尝试连接摄像机:"+path+",请稍等...");
     QImage result;
     VideoCapture videoCap;
-    Mat srcImage;
+
     videoCap.open(path.toStdString().c_str());
     if(videoCap.isOpened())
     {
         emit msg("连接摄像机:"+path+"成功");
+        qDebug()<<"连接摄像机:"+path+"成功";
         srcImage = Mat::zeros(videoCap.get(CV_CAP_PROP_FRAME_HEIGHT), videoCap.get(CV_CAP_PROP_FRAME_WIDTH), CV_8UC3);
         videoCap>>srcImage;
         videoCap.release();
@@ -24,6 +25,7 @@ void GetImage::doWork(const QString &path)
     }else
     {
         emit msg("连接摄像机:"+path+"失败，请检查登录信息是否正确");
+        qDebug()<<"连接摄像机:"+path+"失败，请检查登录信息是否正确";
     }
 
 }
@@ -31,10 +33,11 @@ void GetImage::doWork(const QString &path)
 void Controller::handleResults(const QImage &_image)
 {
     qDebug()<<"void Controller::handleResults(const QImage &_image)";
-    emit msg(QString("从摄像机上取图成功,原图大小:%1*%2").arg(_image.width()).arg(_image.height()));
-    emit image(_image);
-
+    QImage result=QImage((uchar*)(srcImage.data), srcImage.cols, srcImage.rows, QImage::Format_RGB888);
+    emit msg(QString("从摄像机上取图成功,原图大小:%1*%2").arg(result.width()).arg(result.height()));
+    emit image(result);
 }
+
 void Controller::getmsg(const QString &_msg)
 {
     emit msg(_msg);

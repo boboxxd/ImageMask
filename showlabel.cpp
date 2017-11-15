@@ -50,6 +50,7 @@ void ShowLabel::loadimage(const QImage &_image)
     }
         qDebug()<<"endif";
     }
+
     update();
 }
 

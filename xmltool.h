@@ -1,6 +1,6 @@
 #ifndef XMLTOOL_H
 #define XMLTOOL_H
-#include<QTXML>
+#include<QtXml>
 #include<QFile>
 
 //坐标转string

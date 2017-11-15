@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
- INCLUDEPATH += /usr/local/opt/opencv3/include
- LIBS+=-L/usr/local/Cellar/opencv3/3.2.0/lib\
+QT       += core gui xml sql
+ INCLUDEPATH += /usr/local/opencv-3.1.0/include
+ LIBS+=-L/usr/local/opencv-3.1.0/lib\
 -lopencv_shape -lopencv_stitching\
 -lopencv_objdetect -lopencv_superres -lopencv_videostab\
 -lopencv_calib3d -lopencv_features2d\
@@ -26,14 +26,16 @@ SOURCES += main.cpp\
     showlabel.cpp \
     xmltool.cpp \
     getimage.cpp \
-    logwindow.cpp
+    logwindow.cpp \
+    sqlhandle.cpp
 
 HEADERS  += widget.h \
     common.h \
     showlabel.h \
     xmltool.h \
     getimage.h \
-    logwindow.h
+    logwindow.h \
+    sqlhandle.h
 
 FORMS    += widget.ui
 

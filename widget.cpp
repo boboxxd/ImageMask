@@ -5,6 +5,8 @@
 #include"xmltool.h"
 #include"logwindow.h"
 
+#include"sqlhandle.h"
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -164,7 +166,6 @@ void Widget::drawArrow()
 //保存为xml文件
 void Widget::save()
 {
-
     ui->logwnd->clear();
     qDebug()<<"void Widget::save()";
     emit msg(ui->label->toLog());
