@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include<QTextBrowser>
+
 class LogWindow : public QTextBrowser
 {
     Q_OBJECT

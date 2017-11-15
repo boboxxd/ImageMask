@@ -1,6 +1,5 @@
 #include "sqlhandle.h"
 #include <QDebug>
-
 SqlHandle::SqlHandle()
 {
     database = QSqlDatabase::addDatabase("QSQLITE");
@@ -79,7 +78,6 @@ bool SqlHandle::Querry(const QString &cmd)
     sql_query.prepare(select_sql);
     if(!sql_query.exec())
     {
-
        return false;
     }
     else
