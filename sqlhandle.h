@@ -23,7 +23,6 @@ public:
     bool Drop(const QString &cmd);
     //query
     bool Querry(const QString &cmd);
-
 public slots:
 
 signals:
